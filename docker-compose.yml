@@ -1,30 +1,31 @@
-version: "3.6"
+version: "3.7"
 services:
   web:
-    image: "gitlab/gitlab-ce:latest"
-    restart: always
-    hostname: 'gitlab.example.com'
-    environment:
-      GITLAB_OMNIBUS_CONFIG: external_url 'https://gitlab.example.com'
-       # Add any other gitlab.rb configuration here, each on its own line
+    build: .
+    container_name: gitlab_rebuilt
+    restart: on-failure
+    hostname: 'gitlab.example.com:9090'
+    # environment:
+      # GITLAB_OMNIBUS_CONFIG: external_url "https://gitlab.example.com:"
+      #  Add any other gitlab.rb configuration here, each on its own line
     ports:
-      - '80:80'
+      - "9090:9090"
       - '443:443'
       - '22:22'
     volumes:
-      - "/srv/gitlab/config:/etc/gitlab:Z"
-      - "/srv/gitlab/logs:/var/log/gitlab:Z"
-      - "/srv/gitlab/data:/var/opt/gitlab:Z"
+      - "/Users/kuhlenkondeshe/srv/gitlab/config:/etc/gitlab:rw"
+      - "/Users/kuhlenkondeshe/srv/gitlab/logs:/var/log/gitlab:rw"
+      - "/Users/kuhlenkondeshe/srv/gitlab/data:/var/opt/gitlab:rw"
 
-  web:
+  jenkins:
     image: "jenkins/jenkins:lts"
-    ports: 
+    container_name: jenkins
+    restart: on-failure
+    ports:
       - "5000:5000"
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
 
 volumes:
-  jenkins_home:      
-
-
+  jenkins_home:
